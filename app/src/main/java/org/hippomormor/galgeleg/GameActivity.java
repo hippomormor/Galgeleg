@@ -31,7 +31,6 @@ public class GameActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         if (view == inputView && inputView.getText().length() > 0) {
             logicHandler.checkAnswer();
-            Log.d("Word is", logicHandler.getAnswer());
             InputMethodManager inputMethodManager = (InputMethodManager)
                     view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

@@ -1,6 +1,8 @@
 package org.hippomormor.galgeleg;
 
 import android.annotation.SuppressLint;
+import android.provider.Settings;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class LogicHandler {
@@ -9,6 +11,7 @@ public class LogicHandler {
     TextView resultView;
     TextView infoView;
     TextView inputText;
+    ImageView imageView;
     GameActivity gameActivity;
 
     public LogicHandler(GameActivity gameActivity) {
@@ -17,6 +20,7 @@ public class LogicHandler {
         infoView = (TextView) gameActivity.findViewById(R.id.infoView);
         inputText = (TextView) gameActivity.findViewById(R.id.inputText);
         resultView = (TextView) gameActivity.findViewById(R.id.resultView);
+        imageView = (ImageView) gameActivity.findViewById(R.id.imageView);
     }
 
     public String getAnswer(){
@@ -28,6 +32,7 @@ public class LogicHandler {
         logic.nulstil();
         resultView.setText(logic.getSynligtOrd());
         infoView.setText("Gæt et bogstav..");
+        imageView.setImageResource(R.drawable.hang);
         inputText.setEnabled(true);
     }
 
@@ -47,6 +52,26 @@ public class LogicHandler {
 
                 if (!logic.erSidsteBogstavKorrekt()) {
                     infoView.setText("Forkert!");
+
+                    switch (logic.getAntalForkerteBogstaver()) {
+                        case 0:  imageView.setImageResource(R.drawable.hang);
+                            break;
+                        case 1:  imageView.setImageResource(R.drawable.hang0);
+                            break;
+                        case 2:  imageView.setImageResource(R.drawable.hang1);
+                            break;
+                        case 3:  imageView.setImageResource(R.drawable.hang2);
+                            break;
+                        case 4:  imageView.setImageResource(R.drawable.hang3);
+                            break;
+                        case 5:  imageView.setImageResource(R.drawable.hang4);
+                            break;
+                        case 6:  imageView.setImageResource(R.drawable.hang5);
+                            break;
+                        case 7:  imageView.setImageResource(R.drawable.hang6);
+                            break;
+                    }
+                    System.out.println(logic.getAntalForkerteBogstaver());
                 } else {
                     infoView.setText("Korrekt!");
                 }

@@ -7,7 +7,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:background="#ffffff">
 
         <EditText
             android:layout_width="wrap_content"
@@ -39,10 +40,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:minHeight="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignEnd="@+id/infoView"
-            android:layout_marginTop="85dp"
-            android:layout_alignStart="@+id/infoView" />
+            android:src="@drawable/hang"
+            android:layout_gravity="center"
+            android:layout_above="@+id/resultView"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/restartButton" />
 
         <TextView
             android:layout_width="wrap_content"
