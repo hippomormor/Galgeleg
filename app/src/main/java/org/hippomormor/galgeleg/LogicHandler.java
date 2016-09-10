@@ -1,7 +1,6 @@
 package org.hippomormor.galgeleg;
 
 import android.annotation.SuppressLint;
-import android.provider.Settings;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,10 +20,7 @@ public class LogicHandler {
         inputText = (TextView) gameActivity.findViewById(R.id.inputText);
         resultView = (TextView) gameActivity.findViewById(R.id.resultView);
         imageView = (ImageView) gameActivity.findViewById(R.id.imageView);
-    }
-
-    public String getAnswer(){
-        return logic.getOrdet();
+        resultView.setText(logic.getSynligtOrd());
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,7 +36,6 @@ public class LogicHandler {
     public void checkAnswer() {
 
         if (!logic.erSpilletSlut()) {
-            resultView.setText(logic.getSynligtOrd());
 
             CharSequence answer = inputText.getText();
             inputText.setText("");
@@ -72,9 +67,9 @@ public class LogicHandler {
                             break;
                     }
                     System.out.println(logic.getAntalForkerteBogstaver());
-                } else {
+                } else
                     infoView.setText("Korrekt!");
-                }
+
                 resultView.setText(logic.getSynligtOrd());
             }
             if (logic.erSpilletTabt()) {

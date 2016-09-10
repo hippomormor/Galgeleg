@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         quitButton = (Button) findViewById(R.id.quitButton);
         startButton.setOnClickListener(this);
         quitButton.setOnClickListener(this);
-
     }
 
     @Override

@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageViewMenu"
         android:minHeight="200dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/hang6"
         android:layout_gravity="center"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
