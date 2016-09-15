@@ -7,9 +7,7 @@ import android.widget.TextView;
 public class LogicHandler {
 
     private Logic logic;
-    TextView resultView;
-    TextView infoView;
-    TextView inputText;
+    TextView resultView, infoView, inputText;
     ImageView imageView;
     GameActivity gameActivity;
 

@@ -11,13 +11,10 @@ import java.util.Random;
 
 public class Logic {
   private ArrayList<String> muligeOrd = new ArrayList<String>();
-  private String ordet;
+  private String ordet, synligtOrd;
   private ArrayList<String> brugteBogstaver = new ArrayList<String>();
-  private String synligtOrd;
   private int antalForkerteBogstaver;
-  private boolean sidsteBogstavVarKorrekt;
-  private boolean spilletErVundet;
-  private boolean spilletErTabt;
+  private boolean sidsteBogstavVarKorrekt, spilletErVundet, spilletErTabt;
 
 
   public ArrayList<String> getBrugteBogstaver() {
