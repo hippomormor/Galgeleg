@@ -1,9 +1,16 @@
 package org.hippomormor.galgeleg;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.IBinder;
+import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +18,35 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button startButton, quitButton;
-    private MediaPlayer mp;
+    boolean musicIsBound = false;
+    MusicService musicService;
+
+    ServiceConnection serviceConnection = new ServiceConnection(){
+
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder) binder).getService();
+            Log.d("Started service", "Music");
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this,MusicService.class),
+                serviceConnection, Context.BIND_AUTO_CREATE);
+        musicIsBound = true;
+    }
+
+    void doUnbindService()
+    {
+        if(musicIsBound)
+        {
+            unbindService(serviceConnection);
+            musicIsBound = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +56,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         quitButton = (Button) findViewById(R.id.quitButton);
         startButton.setOnClickListener(this);
         quitButton.setOnClickListener(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.edit()
+                .putBoolean("music", true)
+                .putBoolean("sound", false)
+                .putBoolean("online", false)
+                .apply();
+        doBindService();
+    }
+
+    @Override
+    protected void onDestroy() {
+        doUnbindService();
+        super.onDestroy();
     }
 
     @Override

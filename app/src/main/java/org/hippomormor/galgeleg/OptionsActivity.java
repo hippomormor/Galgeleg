@@ -1,7 +1,13 @@
 package org.hippomormor.galgeleg;
 
-import android.media.MediaPlayer;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,7 +16,34 @@ import android.widget.Switch;
 
 public class OptionsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private Switch soundSwitch, musicSwitch, onlineSwitch;
-    private MediaPlayer mp;
+    private boolean musicIsBound = false;
+    MusicService musicService;
+
+    private ServiceConnection serviceConnection = new ServiceConnection(){
+
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder) binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this,MusicService.class),
+                serviceConnection, Context.BIND_AUTO_CREATE);
+        musicIsBound = true;
+    }
+
+    void doUnbindService()
+    {
+        if(musicIsBound)
+        {
+            unbindService(serviceConnection);
+            musicIsBound = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +52,20 @@ public class OptionsActivity extends AppCompatActivity implements CompoundButton
         soundSwitch = (Switch) findViewById(R.id.switchSound);
         musicSwitch = (Switch) findViewById(R.id.switchMusic);
         onlineSwitch = (Switch) findViewById(R.id.switchOnline);
-        mp = MediaPlayer.create(this, R.raw.music);
         soundSwitch.setOnCheckedChangeListener(this);
         musicSwitch.setOnCheckedChangeListener(this);
         onlineSwitch.setOnCheckedChangeListener(this);
+        doBindService();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        musicSwitch.setChecked(true);
+      //  soundSwitch.setChecked(preferences.getBoolean("sound", false));
+       // onlineSwitch.setChecked(preferences.getBoolean("online", false));
+    }
+
+    @Override
+    protected void onDestroy() {
+        doUnbindService();
+        super.onDestroy();
     }
 
     @Override
@@ -44,10 +87,12 @@ public class OptionsActivity extends AppCompatActivity implements CompoundButton
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         if (compoundButton == musicSwitch) {
             if (isChecked) {
-                mp.setLooping(true);
-                mp.start();
-            } else
-                mp.stop();
+                musicService.resumeMusic();
+            } else {
+                musicService.pauseMusic();
+            }
         }
     }
+
+
 }
