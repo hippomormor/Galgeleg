@@ -1,7 +1,5 @@
 package org.hippomormor.galgeleg;
 
-import android.os.AsyncTask;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +15,6 @@ public class Logic {
   private ArrayList<String> brugteBogstaver = new ArrayList<String>();
   private int antalForkerteBogstaver;
   private boolean sidsteBogstavVarKorrekt, spilletErVundet, spilletErTabt;
-
 
   public ArrayList<String> getBrugteBogstaver() {
     return brugteBogstaver;
@@ -51,7 +48,6 @@ public class Logic {
     return spilletErTabt || spilletErVundet;
   }
 
-
   public void nulstil() {
     brugteBogstaver.clear();
     antalForkerteBogstaver = 0;
@@ -60,7 +56,6 @@ public class Logic {
     ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
     opdaterSynligtOrd();
   }
-
 
   private void opdaterSynligtOrd() {
     synligtOrd = "";

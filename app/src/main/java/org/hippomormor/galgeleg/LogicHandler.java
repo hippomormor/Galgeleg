@@ -31,22 +31,26 @@ public class LogicHandler {
     }
 
     private void setWordList() {
-        if (preferences.getBoolean("online", false)) new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                try {
-                    logic.hentOrdFraDr();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+        if (preferences.getBoolean("online", false)) {
+            new AsyncTask<Object[], Void, Object>() {
 
-            @Override
-            protected void onPostExecute(Object resultat) {
-                resultView.setText(logic.getSynligtOrd());
-            }
-        }.execute();
+                @Override
+                protected Void doInBackground(Object[]... objects) {
+                    try {
+                        logic.hentOrdFraDr();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object object) {
+                    resultView.setText(logic.getSynligtOrd());
+                    super.onPostExecute(object);
+                }
+            }.execute();
+        }
         else {
             logic.sætOrd();
             resultView.setText(logic.getSynligtOrd());
