@@ -2,18 +2,20 @@ package org.hippomormor.galgeleg;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class MusicService extends Service implements MediaPlayer.OnErrorListener {
 
-    private final IBinder mBinder = new ServiceBinder();
-    MediaPlayer mediaPlayer;
+    private final IBinder mediaBinder;
+    private MediaPlayer mediaPlayer;
 
     public MusicService() {
+        mediaBinder = new ServiceBinder();
     }
 
     public class ServiceBinder extends Binder {
@@ -24,7 +26,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return mBinder;
+        return mediaBinder;
     }
 
     @Override
@@ -33,12 +35,15 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
         mediaPlayer = MediaPlayer.create(this, R.raw.music);
         mediaPlayer.setOnErrorListener(this);
-        mediaPlayer.start();
-        Log.d("Service created", "music");
+
         if (mediaPlayer != null) {
             mediaPlayer.setLooping(true);
-            mediaPlayer.setVolume(100, 100);
+            mediaPlayer.setVolume(0.4f, 0.4f);
         }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean("music", true))
+            mediaPlayer.start();
 
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -67,27 +72,20 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    public void pauseMusic()
-    {
-        if(!mediaPlayer.equals("null") && mediaPlayer.isPlaying())
+    public void pauseMusic() {
+        if(mediaPlayer.isPlaying())
             mediaPlayer.pause();
     }
 
-    public void resumeMusic()
-    {
-        if(!mediaPlayer.equals("null") && !mediaPlayer.isPlaying())
+    public void resumeMusic() {
+        if(!mediaPlayer.isPlaying())
             mediaPlayer.start();
-    }
-
-    public void stopMusic() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null;
     }
 
     public boolean onError(MediaPlayer mp, int what, int extra) {
 
-        Toast.makeText(this, "Music player failed", Toast.LENGTH_SHORT).show();
+        Log.d("ERROR", "Music player failed");
+
         if (mediaPlayer != null) {
             try {
                 mediaPlayer.stop();

@@ -1,5 +1,7 @@
 package org.hippomormor.galgeleg;
 
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,18 +52,6 @@ public class Logic {
   }
 
 
-  public Logic() {
-    muligeOrd.add("bil");
-    muligeOrd.add("computer");
-    muligeOrd.add("programmering");
-    muligeOrd.add("motorvej");
-    muligeOrd.add("busrute");
-    muligeOrd.add("gangsti");
-    muligeOrd.add("skovsnegl");
-    muligeOrd.add("solsort");
-    nulstil();
-  }
-
   public void nulstil() {
     brugteBogstaver.clear();
     antalForkerteBogstaver = 0;
@@ -88,7 +78,7 @@ public class Logic {
 
   public void gætBogstav(String bogstav) {
     if (bogstav.length() != 1) return;
-    System.out.println("Der gættes på bogstavet: " + bogstav);
+      System.out.println("Der gættes på bogstavet: " + bogstav);
     if (brugteBogstaver.contains(bogstav)) return;
     if (spilletErVundet || spilletErTabt) return;
 
@@ -133,20 +123,31 @@ public class Logic {
   }
 
   public void hentOrdFraDr() throws Exception {
-    String data = hentUrl("http://dr.dk");
-    //System.out.println("data = " + data);
+      String data = hentUrl("http://dr.dk");
+      data = data.substring(data.indexOf("<body")).
+        replaceAll("<.+?>", " ").toLowerCase().replaceAll("[^a-zæøå]", " ").
+        replaceAll(" [a-zæøå] "," ").
+        replaceAll(" [a-zæøå][a-zæøå] "," ").
+        replaceAll(" [a-zæøå][a-zæøå][a-zæøå] "," ");
 
-    data = data.substring(data.indexOf("<body")). // fjern headere
-            replaceAll("<.+?>", " ").toLowerCase(). // fjern tags
-            replaceAll("[^a-zæøå]", " "). // fjern tegn der ikke er bogstaver
-            replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
-            replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
+      muligeOrd.clear();
+      muligeOrd.addAll(new HashSet<>(Arrays.asList(data.split(" "))));
 
-    System.out.println("data = " + data);
-    muligeOrd.clear();
-    muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
-
-    System.out.println("muligeOrd = " + muligeOrd);
-    nulstil();
+      System.out.println("muligeOrd = " + muligeOrd);
+      nulstil();
   }
+
+    public void sætOrd() {
+        muligeOrd.clear();
+        muligeOrd.add("bil");
+        muligeOrd.add("computer");
+        muligeOrd.add("programmering");
+        muligeOrd.add("motorvej");
+        muligeOrd.add("busrute");
+        muligeOrd.add("gangsti");
+        muligeOrd.add("skovsnegl");
+        muligeOrd.add("solsort");
+        nulstil();
+        System.out.println("muligeOrd = " + muligeOrd);
+    }
 }

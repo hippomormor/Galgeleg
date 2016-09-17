@@ -16,16 +16,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button startButton, quitButton;
     boolean musicIsBound = false;
-    MusicService musicService;
 
-    ServiceConnection serviceConnection = new ServiceConnection(){
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        MusicService musicService;
 
         public void onServiceConnected(ComponentName name, IBinder binder) {
             musicService = ((MusicService.ServiceBinder) binder).getService();
-            Log.d("Started service", "Music");
         }
 
         public void onServiceDisconnected(ComponentName name) {
@@ -33,16 +39,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    void doBindService(){
+    void doBindService() {
         bindService(new Intent(this,MusicService.class),
                 serviceConnection, Context.BIND_AUTO_CREATE);
         musicIsBound = true;
     }
 
-    void doUnbindService()
-    {
-        if(musicIsBound)
-        {
+    void doUnbindService() {
+        if(musicIsBound) {
             unbindService(serviceConnection);
             musicIsBound = false;
         }
@@ -52,16 +56,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         startButton = (Button) findViewById(R.id.startButton);
         quitButton = (Button) findViewById(R.id.quitButton);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.contains("music")) {
+            preferences.edit()
+                    .putBoolean("music", true)
+                    .putBoolean("sound", true)
+                    .putBoolean("online", true)
+                    .apply();
+        }
         startButton.setOnClickListener(this);
         quitButton.setOnClickListener(this);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.edit()
-                .putBoolean("music", true)
-                .putBoolean("sound", false)
-                .putBoolean("online", false)
-                .apply();
+
         doBindService();
     }
 
